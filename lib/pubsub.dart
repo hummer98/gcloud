@@ -7,9 +7,8 @@ library gcloud.pubsub;
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
-
+import 'package:universal_platform/universal_platform.dart';
 import 'package:googleapis/pubsub/v1.dart' as pubsub;
 
 import 'common.dart';
@@ -125,9 +124,7 @@ abstract class PubSub {
   /// not be closed automatically. The caller is responsible for closing it.
   factory PubSub(http.Client client, String project) {
     var emulator = Platform.environment['PUBSUB_EMULATOR_HOST'];
-    return emulator == null
-        ? _PubSubImpl(client, project)
-        : _PubSubImpl.rootUrl(client, project, 'http://$emulator/');
+    return emulator == null ? _PubSubImpl(client, project) : _PubSubImpl.rootUrl(client, project, 'http://$emulator/');
   }
 
   /// The name of the project.
@@ -177,8 +174,7 @@ abstract class PubSub {
   /// The [name] can be either an absolute name or a relative name.
   ///
   /// Returns a `Future` which completes with the newly created subscription.
-  Future<Subscription> createSubscription(String name, String topic,
-      {Uri endpoint});
+  Future<Subscription> createSubscription(String name, String topic, {Uri endpoint});
 
   /// Delete subscription named [name].
   ///
@@ -219,8 +215,7 @@ abstract class PubSub {
   /// Returns a `Future` which completes with a `Page` object holding the
   /// first page. Use the `Page` object to move to the next page of
   /// subscriptions.
-  Future<Page<Subscription>> pageSubscriptions(
-      {String topic, int pageSize = 50});
+  Future<Page<Subscription>> pageSubscriptions({String topic, int pageSize = 50});
 }
 
 /// A Pub/Sub topic.
@@ -353,14 +348,12 @@ abstract class Message {
   /// be UTF-8 encoded to create the actual binary body for the message.
   ///
   /// Message attributes can be passed in the [attributes] map.
-  factory Message.withString(String message, {Map<String, String> attributes}) =
-      _MessageImpl.withString;
+  factory Message.withString(String message, {Map<String, String> attributes}) = _MessageImpl.withString;
 
   /// Creates a new message with a binary body.
   ///
   /// Message attributes can be passed in the [attributes] Map.
-  factory Message.withBytes(List<int> message,
-      {Map<String, String> attributes}) = _MessageImpl.withBytes;
+  factory Message.withBytes(List<int> message, {Map<String, String> attributes}) = _MessageImpl.withBytes;
 
   /// The message body as a String.
   ///
